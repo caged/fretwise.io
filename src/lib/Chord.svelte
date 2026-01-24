@@ -94,13 +94,13 @@
     bind:clientHeight={height}
     bind:this={el}
     data-chord={chordName}
-    href="#"
-    title="Chord diagram for {chordName}"
+    href="/chords/{chordName}"
+    title="View all positions for {chordName}"
     class="w-full h-full flex">
   </a>
   <div class="flex w-full justify-center items-center py-2">
     <button
-      class="flex justify-center items-center gap-1 w-full h-fit p-1 mx-5 text-xs cursor-pointer border border-gray-500 bg-gray-200 rounded-full hover:text-white hover:bg-green-600 hover:border-green-800"
+      class="flex justify-center items-center gap-1 w-full h-fit p-1 mx-5 text-xs cursor-pointer border border-gray-500 bg-gray-200 rounded-full dark:bg-blue-500 dark:border-blue-400 dark:text-white hover:text-white hover:bg-green-600 hover:border-green-800"
       aria-label="Play {chordName} chord at position {position}"
       onclick={playChord}>
       <div class="font-medium">{chordName}</div>
@@ -110,8 +110,9 @@
 </div>
 
 <style>
+  @reference "tailwindcss";
   :global(.barre-rectangle) {
-    @apply fill-[#333] dark:fill-[#e5e7eb];
+    @apply fill-[#333] dark:fill-blue-400/50;
   }
 
   :global(.tuning) {

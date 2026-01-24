@@ -1,6 +1,6 @@
 <script>
   import { Mode } from "tonal";
-  import Chord from "$frets/Chord.svelte";
+  import Chord from "$lib/Chord.svelte";
 
   let { scale } = $props();
 
