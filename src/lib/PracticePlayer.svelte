@@ -11,7 +11,6 @@
 
   function playStep() {
     if (step.midi) {
-      console.log('Playing step:', step.name, 'MIDI:', step.midi);
       // For chord steps, play all notes together
       if (step.displayType === DisplayTypes.CHORD) {
         player.play(step.midi, 15);
