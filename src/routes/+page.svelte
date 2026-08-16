@@ -84,18 +84,6 @@
     };
   });
 
-  $effect(() => {
-    console.log("Page state:", {
-      fretData,
-      filteredFretData,
-      tuning,
-      key,
-      scale,
-      system,
-      position,
-      scaleIntervals: scaleObj.intervals?.length,
-    });
-  });
 </script>
 
 <svelte:head>
@@ -128,6 +116,6 @@
 
 {#if triads.length > 0}
   <div class="relative px-5 dark:border-blue-900">
-    <ScaleChords scale={scaleObj} />
+    <ScaleChords scale={scaleObj} tuning={tunings.get(tuning)} tuningName={tuning} />
   </div>
 {/if}

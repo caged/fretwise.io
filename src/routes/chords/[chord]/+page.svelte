@@ -13,16 +13,10 @@
 
   const chordName = $derived(data.chordName);
   const tuningObj = $derived(tunings.get(tuning));
+  // Null for any chord with no chords-db entry — treat as "no positions" so the
+  // empty state renders instead of throwing.
   const variations = $derived(getChordVariations(chordName, tuningObj));
-
-  $effect(() => {
-    console.log("Chord page:", {
-      chordName,
-      tuning,
-      position,
-      variations,
-    });
-  });
+  const positions = $derived(variations?.positions ?? []);
 </script>
 
 <svelte:head>
@@ -34,21 +28,19 @@
   <div class="mb-8">
     <h1 class="text-4xl font-bold mb-2 dark:text-gray-100">{chordName}</h1>
     <p class="text-gray-600 dark:text-gray-400">
-      {variations.positions.length} position{variations.positions.length !== 1
-        ? "s"
-        : ""} available
+      {positions.length} position{positions.length !== 1 ? "s" : ""} available
     </p>
   </div>
 
-  {#if variations.positions.length > 0}
+  {#if positions.length > 0}
     <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-      {#each variations.positions as _, idx}
+      {#each positions as _, idx}
         <div
           class="relative bg-gray-50 border border-gray-200 hover:bg-gray-100 hover:border-gray-300 transition-all dark:bg-blue-900/20 dark:border dark:border-blue-900/50 dark:hover:bg-blue-900/40 dark:hover:border-blue-500/50 rounded-lg p-4">
           <div class="absolute top-2 right-2 text-xs text-blue-500">
             Position {idx + 1}
           </div>
-          <Chord {chordName} position={idx} tuning={tuningObj} />
+          <Chord {chordName} position={idx} tuning={tuningObj} tuningName={tuning} />
         </div>
       {/each}
     </div>
