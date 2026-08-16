@@ -116,6 +116,6 @@
 
 {#if triads.length > 0}
   <div class="relative px-5 dark:border-blue-900">
-    <ScaleChords scale={scaleObj} tuning={tunings.get(tuning)} />
+    <ScaleChords scale={scaleObj} tuning={tunings.get(tuning)} tuningName={tuning} />
   </div>
 {/if}

@@ -2,7 +2,7 @@
   import { Mode } from "tonal";
   import Chord from "$lib/Chord.svelte";
 
-  let { scale, tuning } = $props();
+  let { scale, tuning, tuningName = null } = $props();
 
   // Chord names are passed through as Mode.triads spells them — enharmonic
   // normalisation happens in the chords-db lookup, so Cb/Fb/E#/B# and the
@@ -23,7 +23,7 @@
   {#each chords as chord}
     <div
       class="bg-gray-50 border border-transparent hover:bg-gray-100 hover:border-gray-200 transition-all dark:bg-blue-900/20 dark:border dark:border-blue-900/50 dark:hover:bg-blue-900/40 rounded">
-      <Chord chordName={chord} {tuning} />
+      <Chord chordName={chord} {tuning} {tuningName} />
     </div>
   {/each}
 </div>

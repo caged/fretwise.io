@@ -1,5 +1,5 @@
 <script>
-  import { getChordVariations } from "../frets/chordFingerings.js";
+  import { getChordVariations, FRET_WINDOW } from "../frets/chordFingerings.js";
   import { tunings } from "$lib";
   import { getContext, onMount } from "svelte";
   import { SVGuitarChord } from "svguitar";
@@ -8,7 +8,8 @@
     chordName,
     position = 0,
     tuning = tunings.get("Standard"),
-    frets = 4,
+    tuningName = null,
+    frets = FRET_WINDOW,
   } = $props();
 
   const { player } = getContext("app");
@@ -22,6 +23,13 @@
   // Degrade to an empty diagram rather than taking the whole page down.
   const variations = $derived(getChordVariations(chordName, tuning));
   const chordData = $derived(variations?.positions?.[position] ?? null);
+
+  // Carry the tuning into the link, or the chord page falls back to Standard
+  // and shows different shapes than the ones just clicked.
+  const chordHref = $derived(
+    `/chords/${encodeURIComponent(chordName)}` +
+      (tuningName ? `?tuning=${encodeURIComponent(tuningName)}` : ""),
+  );
 
   // Colors based on color scheme
   const chordColor = $derived(isDarkMode ? "#e5e7eb" : "#333");
@@ -90,7 +98,7 @@
     bind:clientHeight={height}
     bind:this={el}
     data-chord={chordName}
-    href="/chords/{encodeURIComponent(chordName)}"
+    href={chordHref}
     title="View all positions for {chordName}"
     class="w-full h-full flex">
   </a>

@@ -40,7 +40,7 @@
           <div class="absolute top-2 right-2 text-xs text-blue-500">
             Position {idx + 1}
           </div>
-          <Chord {chordName} position={idx} tuning={tuningObj} />
+          <Chord {chordName} position={idx} tuning={tuningObj} tuningName={tuning} />
         </div>
       {/each}
     </div>

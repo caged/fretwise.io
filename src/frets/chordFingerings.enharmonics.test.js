@@ -2,6 +2,7 @@ import { describe, it, expect } from "vitest";
 import { Mode, Note, Scale } from "tonal";
 import {
   CHORDS_DB_TUNING,
+  FRET_WINDOW,
   getChordVariations,
 } from "./chordFingerings.js";
 
@@ -195,6 +196,43 @@ describe("tuning-aware fingerings", () => {
           for (const [, fret] of position.fingers) {
             if (typeof fret === "number") expect(fret).toBeGreaterThanOrEqual(0);
           }
+        }
+      }
+    }
+  });
+
+  // Retuning can stretch a shape past the window Chord.svelte draws, which
+  // renders fingers off the end of the neck. Worst observed before the fix was
+  // a C sus voicing spanning frets 1-9 in Half Step Down, because the open G
+  // string it leaned on had to be fretted once the tuning dropped.
+  it("never emits a fret past the diagram window", () => {
+    for (const [, tuning] of Object.entries(TUNINGS)) {
+      for (const [, , chordName] of allTriads()) {
+        for (const position of getChordVariations(chordName, tuning)
+          .positions) {
+          for (const [, fret] of position.fingers) {
+            if (typeof fret === "number") {
+              expect(fret).toBeLessThanOrEqual(FRET_WINDOW);
+            }
+          }
+        }
+      }
+    }
+  });
+
+  it("keeps every retuned shape within a hand's span", () => {
+    // Open strings ride above the nut and cost no reach, so only fretted
+    // notes count toward the span.
+    for (const [, tuning] of Object.entries(TUNINGS)) {
+      for (const [, , chordName] of allTriads()) {
+        for (const position of getChordVariations(chordName, tuning)
+          .positions) {
+          const fretted = position.fingers
+            .map(([, fret]) => fret)
+            .filter((fret) => typeof fret === "number" && fret > 0);
+          if (fretted.length < 2) continue;
+          const span = Math.max(...fretted) - Math.min(...fretted) + 1;
+          expect(span).toBeLessThanOrEqual(FRET_WINDOW);
         }
       }
     }

@@ -36,6 +36,13 @@ const CHROMA_TO_DB_KEY = [
 const MAX_FRET = 24;
 
 /**
+ * How many frets a chord diagram spans. Exported so `Chord.svelte` draws the
+ * same window that `retunePosition` fits shapes into — if the two drift, the
+ * chart renders fingers past the end of the neck it drew.
+ */
+export const FRET_WINDOW = 4;
+
+/**
  * Get fingering positions for a chord using the chords-db library
  *
  * @param {string} chordName - The chord name (e.g., "Amin7", "C", "Gmaj7")
@@ -195,7 +202,17 @@ function retunePosition(position, offsets, tuning) {
   const fretted = absolute.filter((fret) => fret > 0);
   const highest = fretted.length ? Math.max(...fretted) : 0;
   const lowest = fretted.length ? Math.min(...fretted) : 0;
-  const newBaseFret = highest <= 4 || !fretted.length ? 1 : lowest;
+
+  // Retuning can stretch a shape past the diagram. Uneven string shifts pull
+  // the grip apart, and a voicing that leaned on an open string high up the
+  // neck now has to fret it — chords-db's open G in Drop C spans frets 2-7,
+  // and C sus voicings can span nine. Those are unplayable as a single grip,
+  // not merely badly framed, so drop them the way out-of-range shapes are
+  // dropped above. Open strings ride above the nut and cost no reach, so only
+  // fretted notes count toward the span.
+  if (fretted.length && highest - lowest + 1 > FRET_WINDOW) return null;
+
+  const newBaseFret = highest <= FRET_WINDOW || !fretted.length ? 1 : lowest;
 
   const toRelative = (fret) => (fret <= 0 ? fret : fret - newBaseFret + 1);
 
